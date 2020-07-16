@@ -1,0 +1,27 @@
+- model: core.customer
+  pk: 1
+  fields:
+    name: Fulano de Tal
+    address: Rua X, n. 1
+    city: Sao Paulo
+    state: SP
+    country: Brazil
+    phone_number: (11) 11111-1111
+- model: core.customer
+  pk: 2
+  fields:
+    name: OLK
+    address: Rua Y, n. 1
+    city: Sao Paulo
+    state: SP
+    country: Brazil
+    phone_number: (11) 1111-1111
+- model: core.person
+  pk: 1
+  fields:
+    cpf: '11111111111'
+- model: core.company
+  pk: 2
+  fields:
+    cnpj: '12345678901234'
+    doing_business_as: OLK
