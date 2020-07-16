@@ -1,0 +1,20 @@
+- model: core.product
+  pk: 1
+  fields:
+    sku_id: 1
+    description: Butter
+    price: 9.99
+
+- model: core.product
+  pk: 2
+  fields:
+    sku_id: 2
+    description: Rice
+    price: 4.75
+
+- model: core.product
+  pk: 3
+  fields:
+    sku_id: 3
+    description: Beans
+    price: 5.84
