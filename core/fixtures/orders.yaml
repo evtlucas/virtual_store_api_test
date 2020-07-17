@@ -1,0 +1,12 @@
+- model: core.order
+  pk: 1
+  fields:
+    id: 1
+    customer_id: 1
+    order_date: 2020-07-16
+    ship_date: 2020-07-16
+    delivery_address: a
+    delivery_city: x,
+    delivery_state: SP,
+    delivery_country: Brazil,
+    delivery_phone_number: 1111-1111

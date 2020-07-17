@@ -45,3 +45,25 @@ class Person(Customer):
 class Company(Customer):
     cnpj = models.CharField(max_length=14, unique=True)
     doing_business_as = models.CharField(max_length=50)
+
+
+class Order(models.Model):
+    order_date = models.DateField(null=False, blank=False)
+    ship_date = models.DateField(null=False, blank=False)
+    customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
+    delivery_address = models.CharField(max_length=100)
+    delivery_city = models.CharField(max_length=100)
+    delivery_state = models.CharField(max_length=2)
+    delivery_country = models.CharField(max_length=20)
+    delivery_phone_number = models.CharField(max_length=15)
+
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='order_items')
+    sku_id = models.CharField(max_length=13, unique=True)
+    description = models.CharField(max_length=200, blank=False)
+    price = models.DecimalField(decimal_places=2, max_digits=10,
+        validators=[MinValueValidator(Decimal('0.01'))])
+
+    def __str__(self):
+        return self.description

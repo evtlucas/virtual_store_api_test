@@ -30,7 +30,7 @@ class TestPersonRequest(APITestCase):
         self.assertEqual(Person.objects.count(), number_of_people + 1)
         self.assertEqual(Person.objects.get(pk=self.new_pk).name, data['name'])
 
-    def test_update_product(self):
+    def test_update_person(self):
         pk=1
         data = {
             'name': 'Ciclano',
@@ -42,11 +42,11 @@ class TestPersonRequest(APITestCase):
             'phone_number': '(11) 1234-5678',
             'cpf': '12345678901'
         }
-        response = self.client.put('/person/{}/'.format(pk), data, format='json')
+        response = self.client.put('/people/{}/'.format(pk), data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Person.objects.get(pk=pk).name, data['name'])
 
-    def test_delete_product(self):
+    def test_delete_person(self):
         number_of_people = Person.objects.count()
         data = {'pk': 1}
         details_url = reverse('person', kwargs=data)

@@ -33,7 +33,7 @@ class TestCompanyRequest(APITestCase):
 
     def test_update_company(self):
         pk=2
-        response = self.client.put('/company/{}/'.format(pk), self.data, format='json')
+        response = self.client.put('/companies/{}/'.format(pk), self.data, format='json')
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Company.objects.get(pk=pk).name, self.data['name'])
 
