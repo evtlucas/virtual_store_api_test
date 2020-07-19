@@ -51,3 +51,7 @@ python manage.py migrate
 ```
 
 It is possible to test whether the program is running by typing `http://localhost:8000/people/` on the browser. You'll see the Django Rest Framework's screen.
+
+## Documentation
+
+The API documentation could be acessed through http://localhost:8000/swagger/

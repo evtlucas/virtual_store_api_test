@@ -24,6 +24,10 @@ class CompanySerializer(serializers.ModelSerializer):
 
 
 class CustomerSerializer(serializers.BaseSerializer):
+    """
+    This method is modified from its ancestor in order to return the customer type.
+    The customer type might help to get the information about the inherited type of the customer.
+    """
     def to_representation(self, instance):
         return {
             'pk': instance.id,
@@ -62,6 +66,9 @@ class OrderSerializer(serializers.ModelSerializer):
             'order_items'
         ]
 
+    """
+    This method intends to return the classes that are related to the order.
+    """
     def to_internal_value(self, data):
         return {
             'customer': data['customer'],
@@ -75,11 +82,15 @@ class OrderSerializer(serializers.ModelSerializer):
             'order_items': data['order_items']
         }
 
+    """
+    This method was overrided in order to save data about the classes related to order.
+    """
     def create(self, validated_data):
         customer_data = validated_data['customer']
         order_items_data = validated_data['order_items']
         customer = Customer.objects.get(pk=customer_data['pk'])
-        order = Order(customer=customer,
+        order = Order(
+            customer=customer,
             order_date=validated_data['order_date'],
             ship_date=validated_data['ship_date'],
             delivery_address=validated_data['delivery_address'],
@@ -92,6 +103,9 @@ class OrderSerializer(serializers.ModelSerializer):
         self.save_order_items(order, order_items_data)
         return order
 
+    """
+    This method was overrided in order to save data about the classes related to order.
+    """
     def update(self, instance, validated_data):
         customer_data = validated_data['customer']
         order_items_data = validated_data['order_items']
@@ -108,6 +122,9 @@ class OrderSerializer(serializers.ModelSerializer):
         self.save_order_items(instance, order_items_data)
         return instance
 
+    """
+    This method saves the items related to the order.
+    """
     def save_order_items(self, order, order_items_data):
         for item in order_items_data:
             order_item = OrderItem(

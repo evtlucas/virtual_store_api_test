@@ -13,5 +13,5 @@ class TestCustomerRequest(APITestCase):
         url = reverse('customers')
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0]['customer_type'], Customer.PERSON)
-        self.assertEqual(response.data[1]['customer_type'], Customer.COMPANY)
+        self.assertEqual(response.data['results'][0]['customer_type'], Customer.PERSON)
+        self.assertEqual(response.data['results'][1]['customer_type'], Customer.COMPANY)
