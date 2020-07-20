@@ -1,12 +1,14 @@
 from django.utils.decorators import method_decorator
 
 from rest_framework import generics
+from rest_framework.views import APIView
+
 from drf_yasg.utils import swagger_auto_schema
 
-from .models import Product, Person, Company, Customer, Order
+from .models import Product, Person, Company, Customer, Order, OrderItem
 from .serializers import ProductSerializer, PersonSerializer
 from .serializers import CompanySerializer, CustomerSerializer
-from .serializers import OrderSerializer
+from .serializers import OrderSerializer, OrderItemSerializer
 
 
 @method_decorator(name='get', decorator=swagger_auto_schema(
@@ -104,7 +106,7 @@ class OrderList(generics.ListCreateAPIView):
 
 
 @method_decorator(name='get', decorator=swagger_auto_schema(
-    operation_description="Retrieve a order company by its id."
+    operation_description="Retrieve an order company by its id."
 ))
 @method_decorator(name='put', decorator=swagger_auto_schema(
     operation_description="Allows the update of an order."
@@ -115,3 +117,33 @@ class OrderList(generics.ListCreateAPIView):
 class OrderDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
+
+@method_decorator(name='get', decorator=swagger_auto_schema(
+    operation_description="List all order items."
+))
+@method_decorator(name='post', decorator=swagger_auto_schema(
+    operation_description="Allows the creation of an order item."
+))
+class OrderItemList(generics.ListCreateAPIView):
+    serializer_class = OrderItemSerializer
+
+    def get_queryset(self):
+        queryset = OrderItem.objects.filter(order_id=self.kwargs["order_pk"])
+        return queryset
+
+@method_decorator(name='get', decorator=swagger_auto_schema(
+    operation_description="Retrieve an order item by its id."
+))
+@method_decorator(name='put', decorator=swagger_auto_schema(
+    operation_description="Allows the update of an order."
+))
+@method_decorator(name='delete', decorator=swagger_auto_schema(
+    operation_description="Removes an order from the database. It's made by the order id."
+))
+class OrderItemDetail(generics.RetrieveUpdateDestroyAPIView):
+    serializer_class = OrderItemSerializer
+
+    def get_queryset(self):
+        queryset = OrderItem.objects.filter(id=self.kwargs["pk"], order_id=self.kwargs["order_pk"])
+        return queryset

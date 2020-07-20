@@ -44,7 +44,7 @@ class CustomerSerializer(serializers.BaseSerializer):
 class OrderItemSerializer(serializers.ModelSerializer):
     class Meta:
         model = OrderItem
-        fields = ['sku_id', 'description', 'price']
+        fields = '__all__'
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -66,9 +66,6 @@ class OrderSerializer(serializers.ModelSerializer):
             'order_items'
         ]
 
-    """
-    This method intends to return the classes that are related to the order.
-    """
     def to_internal_value(self, data):
         return {
             'customer': data['customer'],
@@ -82,15 +79,11 @@ class OrderSerializer(serializers.ModelSerializer):
             'order_items': data['order_items']
         }
 
-    """
-    This method was overrided in order to save data about the classes related to order.
-    """
     def create(self, validated_data):
         customer_data = validated_data['customer']
         order_items_data = validated_data['order_items']
-        customer = Customer.objects.get(pk=customer_data['pk'])
         order = Order(
-            customer=customer,
+            customer_id=customer_data['pk'],
             order_date=validated_data['order_date'],
             ship_date=validated_data['ship_date'],
             delivery_address=validated_data['delivery_address'],
@@ -103,14 +96,10 @@ class OrderSerializer(serializers.ModelSerializer):
         self.save_order_items(order, order_items_data)
         return order
 
-    """
-    This method was overrided in order to save data about the classes related to order.
-    """
     def update(self, instance, validated_data):
         customer_data = validated_data['customer']
         order_items_data = validated_data['order_items']
-        customer = Customer.objects.get(pk=customer_data['pk'])
-        instance.customer = customer
+        instance.customer_id = customer_data['pk']
         instance.order_date = validated_data['order_date']
         instance.ship_date = validated_data['ship_date']
         instance.delivery_address = validated_data['delivery_address']
@@ -122,15 +111,13 @@ class OrderSerializer(serializers.ModelSerializer):
         self.save_order_items(instance, order_items_data)
         return instance
 
-    """
-    This method saves the items related to the order.
-    """
     def save_order_items(self, order, order_items_data):
         for item in order_items_data:
-            order_item = OrderItem(
+            order_item, created = OrderItem.objects.get_or_create(
                 order=order,
                 sku_id=item['sku_id'],
                 description=item['description'],
-                price=item['price']
+                price=item['price'],
+                quantity=item['quantity']
             )
             order_item.save()

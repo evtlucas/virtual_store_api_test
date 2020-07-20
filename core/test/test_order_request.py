@@ -17,7 +17,7 @@ class TestOrderRequest(APITestCase):
         pk = 2
         number_of_orders = Order.objects.count()
         url = reverse('orders')
-        customer_data = CustomerSerializer(Customer.objects.get(pk=1)).data
+        customer_data = CustomerSerializer(Customer.objects.get(pk=2)).data
         data = {
             'pk': pk,
             'customer': customer_data,
@@ -61,30 +61,3 @@ class TestOrderRequest(APITestCase):
         number_of_orders = Order.objects.count()
         self.client.delete(url)
         self.assertEqual(Order.objects.count(), (number_of_orders - 1))
-
-    def test_insert_order_item_into_order(self):
-        pk = 1
-        url = reverse('order', kwargs={'pk': pk})
-        customer_data = CustomerSerializer(Customer.objects.get(pk=1)).data
-        sku_id = 1
-        order_item_data = {
-            'sku_id': sku_id,
-            'description': 'Cake',
-            'price': 5.84
-        }
-        data = {
-            'pk': pk,
-            'customer': customer_data,
-            'order_date': date(2020, 7, 17),
-            'ship_date': date(2020, 7, 16),
-            'delivery_address': 'X',
-            'delivery_city': 'Y',
-            'delivery_state': 'SP',
-            'delivery_country': 'BR',
-            'delivery_phone_number': '1111-1111',
-            'order_items': [order_item_data]
-        }
-        self.client.put(url, data, format='json')
-        self.assertEqual(Order.objects.get(pk=pk).order_date, data['order_date'])
-        order_item = OrderItem.objects.get(order__id=pk, sku_id=sku_id)
-        self.assertEqual(order_item.description, order_item_data['description'])

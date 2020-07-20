@@ -13,7 +13,9 @@ urlpatterns = [
     path('companies/<int:pk>/', views.CompanyDetail.as_view(), name='company'),
     path('customers/', views.CustomerList.as_view(), name='customers'),
     path('orders/', views.OrderList.as_view(), name='orders'),
-    path('orders/<int:pk>/', views.OrderDetail.as_view(), name='order')
+    path('orders/<int:pk>/', views.OrderDetail.as_view(), name='order'),
+    path('orders/<int:order_pk>/items/', views.OrderItemList.as_view(), name='order_items'),
+    path('orders/<int:order_pk>/items/<int:pk>/', views.OrderItemDetail.as_view(), name='order_item_detail')
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

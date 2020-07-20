@@ -1,3 +1,5 @@
+import datetime
+
 from decimal import Decimal
 from django.db import models
 from django.core.validators import MinValueValidator
@@ -74,6 +76,9 @@ class Order(models.Model):
     delivery_country = models.CharField(max_length=20)
     delivery_phone_number = models.CharField(max_length=15)
 
+    def __str__(self):
+        return "{} - {}".format(self.customer.name, self.order_date.strftime('%d/%m/%Y'))
+
 
 class OrderItem(models.Model):
     """
@@ -86,12 +91,10 @@ class OrderItem(models.Model):
         validators=[MinValueValidator(Decimal('0.01'))])
     quantity = models.DecimalField(decimal_places=3, max_digits=6,
         default=Decimal('1.000'))
-    total_price = models.DecimalField(
-        decimal_places=2,
-        max_digits=16,
-        default=Decimal('1.00'),
-        validators=[MinValueValidator(Decimal('0.01'))]
-    )
+
+    @property
+    def total_price(self):
+        return self.price * self.quantity
 
     def __str__(self):
         return self.description

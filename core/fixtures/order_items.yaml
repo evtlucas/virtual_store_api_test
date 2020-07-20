@@ -1,0 +1,8 @@
+- model: core.orderitem
+  pk: 2
+  fields:
+    order_id: 2
+    sku_id: 1
+    description: Meat
+    price: 5.89
+    quantity: 1

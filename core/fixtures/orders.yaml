@@ -10,3 +10,16 @@
     delivery_state: SP,
     delivery_country: Brazil,
     delivery_phone_number: 1111-1111
+
+- model: core.order
+  pk: 2
+  fields:
+    id: 2
+    customer_id: 2
+    order_date: 2020-07-17
+    ship_date: 2020-07-17
+    delivery_address: B
+    delivery_city: Y,
+    delivery_state: SP,
+    delivery_country: Brazil,
+    delivery_phone_number: 2222-2222
