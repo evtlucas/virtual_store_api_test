@@ -15,7 +15,13 @@ urlpatterns = [
     path('orders/', views.OrderList.as_view(), name='orders'),
     path('orders/<int:pk>/', views.OrderDetail.as_view(), name='order'),
     path('orders/<int:order_pk>/items/', views.OrderItemList.as_view(), name='order_items'),
-    path('orders/<int:order_pk>/items/<int:pk>/', views.OrderItemDetail.as_view(), name='order_item_detail')
+    path('orders/<int:order_pk>/items/<int:pk>/', views.OrderItemDetail.as_view(), name='order_item_detail'),
+    path('users/', views.UserCreate.as_view(), name='user_create'),
+    path('login/', views.LoginView.as_view(), name='login')
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)
+
+urlpatterns += [
+    path('api-auth/', include('rest_framework.urls')),
+]

@@ -9,9 +9,14 @@ from rest_framework.test import APITestCase
 from core.models import Order, OrderItem, Customer
 from core.serializers import CustomerSerializer
 
+from .setup_user import SetupUser
+
 
 class TestOrderRequest(APITestCase):
     fixtures = ['customers.yaml', 'orders.yaml']
+
+    def setUp(self):
+        self.token = SetupUser.get_token()
 
     def test_create_order(self):
         pk = 2
@@ -31,7 +36,12 @@ class TestOrderRequest(APITestCase):
             '1111-1111',
             'order_items': []
         }
-        self.client.post(url, data, format='json')
+        self.client.post(
+            url,
+            data,
+            format='json',
+            HTTP_AUTHORIZATION='Token {}'.format(self.token.key)
+        )
         self.assertEqual(Order.objects.count(), (number_of_orders + 1))
         self.assertEqual(Order.objects.get(pk=pk).customer.id, customer_data['pk'])
 
@@ -52,12 +62,20 @@ class TestOrderRequest(APITestCase):
             '1111-1111',
             'order_items': []
         }
-        self.client.put(url, data, format='json')
+        self.client.put(
+            url,
+            data,
+            format='json',
+            HTTP_AUTHORIZATION='Token {}'.format(self.token.key)
+        )
         self.assertEqual(Order.objects.get(pk=pk).order_date, data['order_date'])
 
     def test_delete_order(self):
         pk = 1
         url = reverse('order', kwargs={'pk': pk})
         number_of_orders = Order.objects.count()
-        self.client.delete(url)
+        self.client.delete(
+            url,
+            HTTP_AUTHORIZATION='Token {}'.format(self.token.key)
+        )
         self.assertEqual(Order.objects.count(), (number_of_orders - 1))

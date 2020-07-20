@@ -9,9 +9,14 @@ from rest_framework.test import APITestCase
 from core.models import Order, OrderItem, Customer
 from core.serializers import CustomerSerializer
 
+from .setup_user import SetupUser
+
 
 class TestOrderItemRequest(APITestCase):
     fixtures = ['customers.yaml', 'orders.yaml', 'order_items.yaml']
+
+    def setUp(self):
+        self.token = SetupUser.get_token()
 
     def test_insert_order_item_into_order(self):
         pk = 1
@@ -36,7 +41,12 @@ class TestOrderItemRequest(APITestCase):
             'delivery_phone_number': '1111-1111',
             'order_items': [order_item_data]
         }
-        self.client.put(url, data, format='json')
+        self.client.put(
+            url,
+            data,
+            format='json',
+            HTTP_AUTHORIZATION='Token {}'.format(self.token.key)
+        )
         saved_order = Order.objects.get(pk=pk)
         self.assertEqual(saved_order.order_date, data['order_date'])
         filtered_items = OrderItem.objects.filter(order_id=pk, sku_id=sku_id)
@@ -56,7 +66,12 @@ class TestOrderItemRequest(APITestCase):
             'price': Decimal('5.84'),
             'quantity': 2
         }
-        self.client.post(url, order_item_data, format='json')
+        self.client.post(
+            url,
+            order_item_data,
+            format='json',
+            HTTP_AUTHORIZATION='Token {}'.format(self.token.key)
+        )
         filtered_items = OrderItem.objects.filter(order_id=pk, sku_id=sku_id)
         self.assertGreater(len(filtered_items), 0)
         order_item = filtered_items[0]
@@ -74,7 +89,12 @@ class TestOrderItemRequest(APITestCase):
             'price': Decimal('10.99'),
             'quantity': 1
         }
-        self.client.put(url, order_item_data, format='json')
+        self.client.put(
+            url,
+            order_item_data,
+            format='json',
+            HTTP_AUTHORIZATION='Token {}'.format(self.token.key)
+        )
         filtered_items = OrderItem.objects.filter(order_id=pk, id=item_pk)
         self.assertGreater(len(filtered_items), 0)
         order_item = filtered_items[0]
@@ -88,6 +108,6 @@ class TestOrderItemRequest(APITestCase):
         pk = 2
         item_pk = 2
         url = reverse('order_item_detail', kwargs={'order_pk': pk, 'pk': item_pk})
-        self.client.delete(url)
+        self.client.delete(url, HTTP_AUTHORIZATION='Token {}'.format(self.token.key))
         filtered_items = OrderItem.objects.filter(order_id=pk, id=item_pk)
         self.assertEqual(len(filtered_items), 0)
